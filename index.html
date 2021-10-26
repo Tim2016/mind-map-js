@@ -1,0 +1,233 @@
+<!DOCTYPE HTML>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>РЕДИРЕКТ I+I+I</title>       
+</head>
+<body>
+	<button onclick="createNewElement()">Создать</button>
+	<p>Как создать элемент с различным набором элементов</p>
+	<p>Как сохранять данные об элементе</p>
+	<div id="pad">
+		<!-- <div id="element-1" class="box">
+			<span class="title"><input type="text" name="title"></span>
+			<span class="description"><input type="text" name="description"></span>
+		</div> -->
+	</div>
+</body>
+<script type='text/javascript' src='render.js'></script>
+<script type='text/javascript' src='path.js'></script>
+<script type='text/javascript' src='crud.js'></script>
+<script type="text/javascript">
+
+
+
+
+	// список базовых функций
+	let initList = [
+		getBox
+	];
+
+	initList.push(reloadBox);
+
+	window.onload = function() {
+		for ( let i in initList) {
+			if (typeof initList[i] === 'function') initList[i]();
+		}
+	}
+
+	// разворачиваем блоки из json
+	function getBox() {
+		console.log('start');
+		localStorage.setItem('box', JSON.stringify({title: "John", description:"Two"}))
+
+		console.log('save');
+		let result = JSON.parse( localStorage.box )
+		console.log(result);
+	}
+
+	function createBox(id,title,description){
+		let box = {
+			id : `${id}`,
+			title : `${title}`,
+			description : `${description}`
+		}
+		
+		// console.log(box);
+	}
+
+	function updateBox(){}
+	function deleteBox(){}
+	function reloadBox(){
+		console.log('reloadBox');
+	}
+
+	// объект event события содержит все что известно о событии
+
+
+	// генерация пользовательских событий dispatch-events
+
+	let cursor = { positionX : 0, positionY : 0} 
+	let activeElementId = '';
+	let mainBox = '';
+
+	// отступ от начала элемента
+	let dX = 0;
+	let dY = 0;
+
+	document.addEventListener('mousemove', function(e) {
+		cursor.positionX = e.clientX;
+		cursor.positionY = e.clientY;
+		// console.log(cursor);
+
+		if (mainBox.offsetY && dX == 0) dX = cursor.positionX - mainBox.offsetX;
+		if (mainBox.offsetY && dY == 0) dY = cursor.positionY - mainBox.offsetY;
+		if (mainBox) {
+			// console.log(mainBox.offsetY);
+			// console.log(dY);
+			mainBox.style.left =  cursor.positionX - dX + 'px';
+			mainBox.style.top =  cursor.positionY - dY + 'px';
+			mainBox.style.backgroundColor = 'red'
+		}
+
+	});
+
+	document.addEventListener('mousedown', function(e) {
+		// console.log(e);
+		// console.log(e.target);
+
+		let parentClass = e.target.parentNode;
+		// console.log(parentClass.split(' '));
+		console.log('box in parrent : ' + hasParentClass(parentClass, 'box'));
+
+		if (hasParentClass(e.target, 'box')){
+			mainBox = document.getElementById(activeElementId);
+			mainBox.offsetX = mainBox.offsetLeft;
+			mainBox.offsetY = mainBox.offsetTop;
+		}
+	})
+	
+
+	document.addEventListener('mouseup', function(e) {
+		mainBox ? setCurrentPosition(mainBox) : '';  
+		mainBox = '';
+		dX = 0;
+		dY = 0;
+		// console.log(e.target);
+	})
+
+	// ищем класс у родителей
+	function hasParentClass(element, className) {
+		// если добирается до главного элемента выкидывает ошибку split
+		if (element !== document && element.className.split(' ').indexOf(className) >= 0) {
+			activeElementId = element.id;
+			return true;
+		}
+		try{
+			return element.parentNode && hasParentClass(element.parentNode, className);
+		}catch(TypeError){
+			return false;
+		}
+	}	
+
+	// function cloneElement(){
+		// let box = document.querySelector('#element-1');
+		// console.log(box);	
+	// }
+
+
+	document.addEventListener('dblclick', function(e) {
+
+		if (hasParentClass(e.target, 'box')) {
+			// let box = e.target.parentNode;
+			// let pad = document.getElementById('pad');
+
+			
+			let mainBox = document.getElementById(activeElementId);
+			let parentId = getParentIndex(activeElementId)
+			createNewElement(parentId);
+
+			return;
+
+
+			// let newBox = mainBox.cloneNode(true);
+			// newBox.id = 'element-' + getParentIndex(activeElementId) + '-' + getCountBox(activeElementId);
+			// pad.appendChild(newBox);
+
+			// create box
+		}
+
+
+	});
+
+
+	function getParentIndex(id){
+		console.log('---');
+		return activeElementId.split('-').at(-1);
+		// return activeElementId.split('-')[1];
+
+	}
+
+	// взять последний элемент, посчитать потомков, добавить нового
+	function getCountBox(id) {
+		// console.log('last ID :', activeElementId);
+		// ?box count++
+
+		return document.getElementsByClassName('box').length + 1;
+	}
+
+	// let event = new Event('mousedown');
+	// console.log(event);
+
+	// let pad = document.getElementById('pad');
+	// pad.mousedown = function(e) {
+
+		
+	// 	console.log(e.type);
+	// 	console.log(e);
+	// 	console.log(this);
+	// }
+
+	// document.addEventListener("DOMContentLoaded", function(event) { 
+	//   console.log('dom');
+	// });
+
+	// let element = document.getElementsByClassName('box');
+ //  console.log(element);
+
+	// element[0].onclick = function() {
+	// 	console.log('>>>');
+	// }
+
+	// element[0].onmouseover = function() {
+	// 	console.log('?>');
+	//     this.style.backgroundColor = 'red';
+	// };
+
+</script>
+<style type="text/css">
+	.box {
+		border: 2px solid green;
+	    max-width: 200px;
+	    position: absolute;
+	    top: 100px;
+	}
+	<![CDATA[
+    .Border { fill:none; stroke:blue; stroke-width:1 }
+    .Connect { fill:none; stroke:#888888; stroke-width:2 }
+    .SamplePath { fill:none; stroke:red; stroke-width:5 }
+    .EndPoint { fill:none; stroke:#888888; stroke-width:2 }
+    .CtlPoint { fill:#888888; stroke:none }
+    .AutoCtlPoint { fill:none; stroke:blue; stroke-width:4 }
+    .Label { font-size:22; font-family:Verdana }
+  ]]>
+</style>
+</html>
+
+<!-- window.location.href="example.com?q=test"; -->
+<!-- <a href="#call-me" class="call-button" rel="leanModal"></a> -->
+<!-- <a href="#buy-me" class="order-short" rel="leanModal"></a> -->
