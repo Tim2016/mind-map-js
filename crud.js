@@ -1,60 +1,62 @@
+/*
+* Creating an item 
+* - by pressing the button
+* - by double click
+*/
 function createNewElement(parentId){
-	let newElement = document.createElement("div");
-	
-	// parent - составляем в строку идентификатор предка и наследника
-
-	if (!parentId) {
-		console.log('newElement');
+	if (!parentId && parentId != 0) {
 		parentId = getCountParent();
-
-	} else {console.log('set parentId: '+ parentId);}
-
+	} else {
+		console.log('set parentId: '+ parentId);
+	}
 	let childCount = document.getElementsByClassName('box').length + 1 ;
-
-	setInObj(
-		{
-			'id': 'element-' + parentId + '-' + childCount,
-			'parent': parseInt(parentId),
-			'child' : parseInt(childCount)
-		}
-	);
-
-	newElement.setAttribute('id', 'element-' + parentId + '-'+ childCount);
-	newElement.setAttribute('parent-id', parentId);
-	newElement.classList.add('box');
-	newElement.innerHTML = `
-		<span class="title"><input type="text" name="title"></span>
-		<span class="description"><input type="text" name="description"></span>`;
-
-	document.getElementById('pad').appendChild(newElement);
-
+	setInObj({
+		'id': 'element-' + parentId + '-' + childCount,
+		'parent': parseInt(parentId),
+		'child' : parseInt(childCount)
+	});
+	createElement(parentId, childCount);
+	inputs = document.querySelectorAll('input');
+	inputs.forEach(input => {
+		input.addEventListener('input', setFiledsData);		
+	})
 }
 
+/**
+ * Create and add an element in the DOM
+ */
+function createElement(parentId, childCount, posX = '0px', posY = '0px', title = '', description = '') {
+	let el = document.createElement("div");
 
-
-
-
-
-// let childCount = getElementByParent(parentId).length + 1 ;
-function getElementByParent(parentId){
-	return document.querySelectorAll(`[parent-id = "${parentId}"]`);
+	el.setAttribute('id', 'element-' + parentId + '-'+ childCount);
+	el.setAttribute('parent-id', parentId);
+	el.style.top = posY;
+	el.style.left = posX;
+	el.classList.add('box');
+	el.innerHTML = `
+	<span class="title"><input type="text" name="title" value="${title}"></span>
+	<span class="description"><input type="text" name="description" value="${description}"></span>`;
+	document.getElementById('pad').appendChild(el);
 }
 
-// возвращяет кол-во исходных родителей
+/**
+ * The input field event handler
+ */ 
+const setFiledsData = (e) => {
+	let inputType = e.target.getAttribute('name');
+	setCurrentContent(activeElementId, e.target.value, inputType);
+}
+
+/**
+ * Returns the number of original parents
+ */ 
 function getCountParent(){
 	let parentList = document.querySelectorAll(`[parent-id]`);
-
 	let list = [];
 
 	parentList.forEach((element) => {
 		list.push(element.getAttribute('parent-id'));
 	});
 
-	console.log(parseInt((new Set(list)).size));
-
 	return parseInt((new Set(list)).size);
-}
-
-function updateElement(){
-	
 }

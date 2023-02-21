@@ -1,38 +1,67 @@
-console.log('render');
-console.log('получить данные по api');
-console.log('получить набор классов с параметрами');
-// позиция 
-// id
-// x,y
-// background
-// title
-// description
-
-
-// contain all elemetns, parent and child
 let elements = {
 	list: [],
 	countBranch : 0
 }
 
-console.log('pad start');
-
-
+/**
+* adding an element to the elements set
+*/
 function setInObj(elementAttr){
 	elements.list.push(elementAttr);
 	elements.countBranch++;
 	console.log(elements);
 }
 
-// устанавливаем текущую позицию после отпускания кнопки
-// поиск по массиву объектов
+/**
+* set the current position after the button is released
+* search by array of objects
+*/
 function setCurrentPosition(e){
 	// console.log(e);
 	elements.list.find( (x,i) => { 
 		if(x.id === e.getAttribute('id')){
 			x.x = e.style.left
-			x.y =e.style.top
+			x.y = e.style.top
 		}
 	});
+}
+
+/**
+* set the content of the input fields
+*/ 
+function setCurrentContent(id, content, type){
+	elements.list.find( (x,i) => {
+		if(x.id === id){
+			x[type] = content
+		}
+	});
+}
+
+/**
+* get items from localStorage
+* set the global object
+*/ 
+function getElements() {
+	 elements = JSON.parse(localStorage.elements);	
+	 return elements;
+}
+
+/**
+* draw elements
+*/ 
+function showElements() {
+	getElements().list.forEach( i => {
+		createElement(i.parent, i.child, i.x, i.y, i.title, i.description);
+		console.log(i);
+	})	
+}
+
+/**
+* save a set of elements
+*/ 
+function saveElements() {
+	localStorage.clear();
+	localStorage.elements = JSON.stringify(elements);
+	// console.log(localStorage);
 }
 
