@@ -1,5 +1,7 @@
 ## MindMap on JS
 ---
+[Show example](https://tim2016.github.io/mind-map-js/)
+---
 ### What the pet can do:
 - Create items.
 - Drag and drop elements.
