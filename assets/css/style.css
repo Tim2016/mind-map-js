@@ -1,0 +1,66 @@
+body {
+	margin: 0;
+	padding: 0;
+  background: #f0f0f0;
+}
+
+.menu {
+	padding: 10px;
+	background: grey;
+}
+
+.title input,
+.description input {
+	width: 200px;
+    height: 20px;
+    padding: 3px;
+    margin: 3px;
+    border: 3px solid;
+    box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px;
+}
+
+#pad {
+	position: absolute;
+	height: auto;
+	width: 100%;
+	top:0;
+	left:0;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    padding: 2px 4px 4px 2px;
+    box-shadow: 5px 5px 0 0;
+    background: yellow;
+}
+
+.button-54 {
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #000;
+  cursor: pointer;
+  border: 3px solid;
+  padding: 0.25em 0.5em;
+  box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-54:active {
+  box-shadow: 0px 0px 0px 0px;
+  top: 2px;
+  left: 2px;
+}
+
+@media (min-width: 768px) {
+  .button-54 {
+    padding: 0.25em 0.75em;
+  }
+}

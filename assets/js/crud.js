@@ -25,17 +25,16 @@ function createNewElement(parentId){
 /**
  * Create and add an element in the DOM
  */
-function createElement(parentId, childCount, posX = '0px', posY = '0px', title = '', description = '') {
+function createElement(parentId, childCount, posX = '0px', posY = '45px', title = '', description = '') {
 	let el = document.createElement("div");
-
 	el.setAttribute('id', 'element-' + parentId + '-'+ childCount);
 	el.setAttribute('parent-id', parentId);
 	el.style.top = posY;
 	el.style.left = posX;
 	el.classList.add('box');
 	el.innerHTML = `
-	<span class="title"><input type="text" name="title" value="${title}"></span>
-	<span class="description"><input type="text" name="description" value="${description}"></span>`;
+	<span class="title"><input type="text" name="title" value="${title}" placeholder="title"></span>
+	<span class="description"><input type="text" name="description" value="${description}" placeholder="description"></span>`;
 	document.getElementById('pad').appendChild(el);
 }
 

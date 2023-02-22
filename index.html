@@ -1,136 +1,38 @@
 <!DOCTYPE HTML>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <meta name="author" content="">
-    <title>MindMap</title>       
+    <meta name="author" content="Tim2016">
+    <title>MindMapJS</title>   
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="57x57" href="assets/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="assets/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="assets/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="assets/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="assets/icons/manifest.json">
 </head>
 <body>
-	<button onclick="createNewElement(0)">New</button>
-	<button onclick="saveElements()">Save</button>
-	<button onclick="showElements()">Load</button>
+	<div class="menu">
+		<button class="button-54" role="button" onclick="createNewElement(0)">New</button>
+		<button class="button-54" role="button" onclick="saveElements()">Save</button>
+		<button class="button-54" role="button" onclick="showElements()">Load</button>
+	</div>
 	<div id="pad"></div>
 </body>
-<script type='text/javascript' src='render.js'></script>
-<script type='text/javascript' src='path.js'></script>
-<script type='text/javascript' src='crud.js'></script>
-<script type="text/javascript">
-
-	let cursor = { positionX : 0, positionY : 0} 
-	let activeElementId = '';
-	let mainBox = '';
-
-	let dX = 0;
-	let dY = 0;
-
-	/*
-	* define cursor position
-	* determine the click position relative to the element
-	* set the end position equal to the relative position subtracted from the cursor position
-	*/
-	document.addEventListener('mousemove', function(e) {
-		cursor.positionX = e.clientX;
-		cursor.positionY = e.clientY;
-		if (mainBox.offsetY && dX == 0) dX = cursor.positionX - mainBox.offsetX;
-		if (mainBox.offsetY && dY == 0) dY = cursor.positionY - mainBox.offsetY;
-		if (mainBox) {
-			mainBox.style.left =  cursor.positionX - dX + 'px';
-			mainBox.style.top =  cursor.positionY - dY + 'px';
-			mainBox.style.backgroundColor = '#5e6fff'
-		}
-	});
-
-	/*
-	* mouse down
-	* check for parent 'box'
-	* setting found parent as active element in hasParentClass()
-	* setting current coordinates
-	*/ 
-	document.addEventListener('mousedown', function(e) {
-		if (hasParentClass(e.target, 'box')){
-			mainBox = document.getElementById(activeElementId);
-			mainBox.offsetX = mainBox.offsetLeft;
-			mainBox.offsetY = mainBox.offsetTop;
-		}
-	})
-	
-	/*
-	* mouse up
-	* saving data to a shared elements object
-	*/ 
-	document.addEventListener('mouseup', function(e) {
-		if (mainBox) setCurrentPosition(mainBox);
-		mainBox = '';
-		dX = 0;
-		dY = 0;
-	})	
-
-	/**
-	* create a child by double clicking
-	* check among 'box' elements
-	*/ 
-	document.addEventListener('dblclick', function(e) {
-		if (hasParentClass(e.target, 'box')) {
-			let mainBox = document.getElementById(activeElementId);
-			let parentId = getParentIndex(activeElementId)
-			createNewElement(parentId);
-			return;
-		}
-	});
-
-	/*
-	* recursive class check
-	* if the element does not contain a className, the search continues in the parent elements
-	*/ 
-	function hasParentClass(element, className) {
-		// если добирается до главного элемента выкидывает ошибку split
-		if (element !== document && element.className.split(' ').indexOf(className) >= 0) {
-			activeElementId = element.id;
-			return true;
-		}
-		try{
-			return element.parentNode && hasParentClass(element.parentNode, className);
-		}catch(TypeError){
-			return false;
-		}
-	}
-
-	/*
-	* Get the child index of the current element from id="element-<parent>-<childCount>",
-	* Used to set the parent index for descendant elements.
-	*/ 
-	function getParentIndex(id){
-		return activeElementId.split('-').at(-1);
-	}
-</script>
-
-<style type="text/css">
-
-	#pad {
-		position: absolute;
-		height: auto;
-		width: 100%;
-		top:0;
-		left:0;
-	}
-	.box {
-		border: 4px solid #aab0ff;
-		border-radius: 6px;
-	    max-width: 200px;
-	    position: absolute;
-	    /*top: 100px;*/
-	}
-	<![CDATA]
-    .Border { fill:none; stroke:blue; stroke-width:1 }
-    .Connect { fill:none; stroke:#888888; stroke-width:2 }
-    .SamplePath { fill:none; stroke:red; stroke-width:5 }
-    .EndPoint { fill:none; stroke:#888888; stroke-width:2 }
-    .CtlPoint { fill:#888888; stroke:none }
-    .AutoCtlPoint { fill:none; stroke:blue; stroke-width:4 }
-    .Label { font-size:22; font-family:Verdana }
-  ]]>
-</style>
+<script type='text/javascript' src='assets/js/start.js'></script>
+<script type='text/javascript' src='assets/js/crud.js'></script>
+<script type='text/javascript' src='assets/js/render.js'></script>
 </html>
